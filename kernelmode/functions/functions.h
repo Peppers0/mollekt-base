@@ -1,6 +1,6 @@
 #pragma once
 
-#include "structs.h"
+#include "../definitions.h"
 
 namespace functions {
 	PVOID get_system_module_base(const char* module_name);

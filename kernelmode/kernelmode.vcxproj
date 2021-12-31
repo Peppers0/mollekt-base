@@ -35,7 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{514D49EE-ACA3-4699-9AAF-307C8F2C020A}</ProjectGuid>
+    <ProjectGuid>{E49DCDB0-3311-48E0-944E-F015BF661414}</ProjectGuid>
     <TemplateGuid>{1bc93793-694f-48fe-9372-81e2b05556fd}</TemplateGuid>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
@@ -150,6 +150,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -160,14 +161,14 @@
     <FilesToPackage Include="$(TargetPath)" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="functions\communication\communication.h" />
+    <ClInclude Include="definitions.h" />
+    <ClInclude Include="functions\functions.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="functions\communication\communication.cpp" />
     <ClCompile Include="functions\functions.cpp" />
     <ClCompile Include="main\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="functions\communication\communication.h" />
-    <ClInclude Include="functions\functions.h" />
-    <ClInclude Include="functions\structs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

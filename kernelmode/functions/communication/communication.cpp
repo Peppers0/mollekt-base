@@ -12,7 +12,7 @@ bool communication::initialize(void* kernel_function_address) {
 
 	// !!!! IMPORTANT !!!! if u change function in driver u also need to change in usermode
 
-	PVOID* function = reinterpret_cast<PVOID*>(functions::get_system_module_export("\\SystemRoot\\System32\\drivers\\dxgkrnl.sys", "NtGdiDdDDINetDispStartMiracastDisplayDevice")); 
+	auto function = reinterpret_cast<PVOID*>(functions::get_system_module_export("\\SystemRoot\\System32\\drivers\\dxgkrnl.sys", "NtGdiDdDDINetDispStartMiracastDisplayDevice"));
 
 	if (!function)
 		return false;
@@ -24,12 +24,12 @@ bool communication::initialize(void* kernel_function_address) {
 
 	RtlSecureZeroMemory(&original, sizeof(original));
 
-	memcpy((PVOID)((ULONG_PTR)original), &shell_code, sizeof(shell_code));
+	memcpy(reinterpret_cast<PVOID>(reinterpret_cast<ULONG_PTR>(original)), &shell_code, sizeof(shell_code));
 
-	uintptr_t hook_address = reinterpret_cast<uintptr_t>(kernel_function_address);
+	auto hook_address = reinterpret_cast<uintptr_t>(kernel_function_address);
 
-	memcpy((PVOID)((ULONG_PTR)original + sizeof(shell_code)), &hook_address, sizeof(void*));
-	memcpy((PVOID)((ULONG_PTR)original + sizeof(shell_code) + sizeof(void*)), &shell_code_end, sizeof(shell_code_end));
+	memcpy(reinterpret_cast<PVOID>(reinterpret_cast<ULONG_PTR>(original) + sizeof(shell_code)), &hook_address, sizeof(void*));
+	memcpy(reinterpret_cast<PVOID>(reinterpret_cast<ULONG_PTR>(original + sizeof(shell_code) + sizeof(void*))), &shell_code_end, sizeof(shell_code_end));
 
 	functions::write_to_read_only_memory(function, &original, sizeof(original));
 
@@ -48,9 +48,9 @@ NTSTATUS communication::handler(PVOID called_parameter) {
 		RtlInitAnsiString(&ansi_string, request->m_module_name);
 		RtlAnsiStringToUnicodeString(&module_name, &ansi_string, TRUE);
 
-		PsLookupProcessByProcessId((HANDLE)request->m_process_id, &process);
+		PsLookupProcessByProcessId(reinterpret_cast<HANDLE>(request->m_process_id), &process);
 
-		ULONG64 base_address64 = functions::get_module_base_x64(process, module_name);
+		auto base_address64 = functions::get_module_base_x64(process, module_name);
 
 		request->m_base_address = base_address64;
 
@@ -59,13 +59,13 @@ NTSTATUS communication::handler(PVOID called_parameter) {
 
 	else if (request->is_request_read) {
 		if (request->m_address < 0x7FFFFFFFFFFF && request->m_address > 0) {
-			functions::read_kernel_memory((HANDLE)request->m_process_id, request->m_address, request->m_output, request->m_size);
+			functions::read_kernel_memory(reinterpret_cast<HANDLE>(request->m_process_id), request->m_address, request->m_output, request->m_size);
 		}
 	}
 
 	else if (request->is_request_write) {
 		if (request->m_address < 0x7FFFFFFFFFFF && request->m_address > 0) {
-			PVOID kernel_buffer = ExAllocatePool(NonPagedPool, request->m_size);
+			auto kernel_buffer = ExAllocatePool(NonPagedPool, request->m_size);
 
 			if (!kernel_buffer)
 				return STATUS_UNSUCCESSFUL;
@@ -73,11 +73,11 @@ NTSTATUS communication::handler(PVOID called_parameter) {
 			if (!memcpy(kernel_buffer, request->m_buffer_address, request->m_size))
 				return STATUS_UNSUCCESSFUL;
 
-			PEPROCESS process;
+			PEPROCESS process = {};
 
-			PsLookupProcessByProcessId((HANDLE)request->m_process_id, &process);
+			PsLookupProcessByProcessId(reinterpret_cast<HANDLE>(request->m_process_id), &process);
 
-			functions::write_kernel_memory((HANDLE)request->m_process_id, request->m_base_address, kernel_buffer, request->m_size);
+			functions::write_kernel_memory(reinterpret_cast<HANDLE>(request->m_process_id), request->m_base_address, kernel_buffer, request->m_size);
 
 			ExFreePool(kernel_buffer);
 		}
