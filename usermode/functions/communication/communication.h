@@ -62,7 +62,7 @@ namespace communication {
 	}
 
 	inline static ULONG64 get_base_address(const char* module_name) {
-		request_data request = { 0 };
+		request_data request;
 
 		request.m_process_id = process_id;
 
