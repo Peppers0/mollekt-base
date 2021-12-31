@@ -145,6 +145,7 @@
     <ClCompile Include="main\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="datatypes\datatypes.h" />
     <ClInclude Include="functions\communication\communication.h" />
     <ClInclude Include="functions\functions.h" />
     <ClInclude Include="obfuscation\crypt_string.h" />

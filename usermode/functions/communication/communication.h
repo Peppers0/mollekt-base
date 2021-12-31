@@ -30,7 +30,7 @@ struct handle_disponser_t {
 using unique_handle = std::unique_ptr<HANDLE, handle_disponser_t>;
 
 template<typename ... Arg>
-inline uint64_t run(const Arg ... args) {
+__forceinline uint64_t run(const Arg ... args) {
 	void* hooked_func = GetProcAddress(LoadLibrary("win32u.dll"), "NtGdiDdDDINetDispStartMiracastDisplayDevice");
 
 	auto ret = static_cast<uint64_t(_stdcall*)(Arg...)>(hooked_func);
@@ -43,7 +43,7 @@ namespace communication {
 	HWND	 hwnd;
 	uintptr_t base_address;
 
-	inline uint32_t get_process_id(std::string process_name) {
+	__forceinline uint32_t get_process_id(std::string process_name) {
 		PROCESSENTRY32 process_entry;
 
 		const unique_handle snapshot_handle(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0));
@@ -61,7 +61,7 @@ namespace communication {
 		return NULL;
 	}
 
-	inline static ULONG64 get_base_address(const char* module_name) {
+	__forceinline static ULONG64 get_base_address(const char* module_name) {
 		request_data request;
 
 		request.m_process_id = process_id;
@@ -78,7 +78,7 @@ namespace communication {
 	}
 
 	template <typename T>
-	inline T read(unsigned long long int address) {
+	__forceinline T read(unsigned long long int address) {
 		T response = {};
 
 		request_data request;
@@ -99,7 +99,7 @@ namespace communication {
 		return response;
 	}
 
-	inline bool write_value(unsigned long long int address, UINT_PTR value, SIZE_T write_size) {
+	__forceinline bool write_value(unsigned long long int address, UINT_PTR value, SIZE_T write_size) {
 		request_data request;
 
 		request.m_process_id = process_id;
@@ -119,7 +119,7 @@ namespace communication {
 	}
 
 	template<typename T>
-	inline bool write(UINT_PTR write_address, const T& value) {
+	__forceinline bool write(UINT_PTR write_address, const T& value) {
 		return write_value(write_address, (UINT_PTR)&value, sizeof(T));
 	}
 }
