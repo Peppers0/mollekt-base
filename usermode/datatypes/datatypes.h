@@ -8,7 +8,7 @@ struct vec2_t {
 
 	vec2_t(float i_x, float i_y) {
 		x = i_x;
-		y = i_x;
+		y = i_y;
 	}
 
 	__forceinline vec2_t operator+(const vec2_t& value) const { 
@@ -89,7 +89,7 @@ struct vec3_t {
 
 	vec3_t(float i_x, float i_y, float i_z) {
 		x = i_x;
-		y = i_x;
+		y = i_y;
 		z = i_z;
 	}
 
