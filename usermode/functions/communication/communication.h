@@ -98,6 +98,17 @@ namespace communication {
 
 		return response;
 	}
+	
+		template<typename T>
+	__forceinline T read_chain(unsigned long long int address, std::vector<uintptr_t> chain) {
+		auto current = address;
+
+		for (auto i = 0; i < chain.size() - 1; i++) {
+			current = read<unsigned long long int>(current + chain[i]);
+		}
+
+		return read<T>(current + chain[chain.size() - 1]);
+	}
 
 	__forceinline bool write_value(unsigned long long int address, UINT_PTR value, SIZE_T write_size) {
 		request_data request;
